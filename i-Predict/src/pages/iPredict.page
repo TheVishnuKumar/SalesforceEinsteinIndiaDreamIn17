@@ -1,0 +1,101 @@
+<apex:page controller="iPredictCtrl" title="i-Predict" showHeader="false" sidebar="false" standardStylesheets="false" id="pge">
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+        <!-- Import the Design System style sheet -->
+        <apex:slds />
+        
+        <style>
+            body{
+                margin: 0px;
+            }
+            .predictionTypes{
+                border-radius: 0px;
+                display:none;
+            }
+        </style>
+        
+        <script>
+            function visionTypeChange(){
+               $(".predictionTypes").hide();
+               $("[id*="+$(".visionType").val()+"]").show();
+            }
+            
+            function selectFile(){
+                $("#pge\\:frm\\:file").click();
+            }
+            
+            function prettyPrint() {
+                var ugly = document.getElementById('pge:frm:jsonResponse').value;
+                var obj = JSON.parse(ugly);
+                var pretty = JSON.stringify(obj, undefined, 4);
+                document.getElementById('pge:frm:jsonResponse').value = pretty;
+            }
+            function showStatus(){
+               $(".statusIndi").show();
+            }
+           
+            function hideStatus(){
+                $(".statusIndi").hide();
+                prettyPrint();
+            }
+        </script>
+    </head>
+    <body>
+        <apex:form id="frm">
+            <script>
+                $( document ).ready(function() {
+                   visionTypeChange();
+                   hideStatus();
+               });
+            </script>
+                        
+            <!--Progress Status-->
+            <div class="demo-only demo--inverse statusIndi" style="height: 6rem;position: fixed;z-index: 1000;left: 51%;top: 40%;z-index:1100;display:none;">
+              <div class="slds-spinner_container">
+                <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+                  <span class="slds-assistive-text">Loading</span>
+                  <div class="slds-spinner__dot-a"></div>
+                  <div class="slds-spinner__dot-b"></div>
+                </div>
+              </div>
+            </div>
+            <div class="statusIndi" style="width:100%;position:fixed;height:2000px;background:black;z-index:1000;opacity:0.6;top: 0;left: 0;display:none;"></div>
+            <!--Progress Status-->
+            
+            <div align="center" style="padding: 10px;">
+                <div style="font-size: 45px;color: #199de0;">
+                    i-Predict
+                </div>
+                
+                <table style="width:100%">
+                    <tr>
+                        <td style="width:100px;">
+                            <apex:selectList value="{!selSearchOpt}" size="1" multiselect="false" styleClass="slds-input visionType" style="height:32px;width: 100px;" onchange="visionTypeChange();">
+                                <apex:selectOptions value="{!searchTypeSelOpt}"></apex:selectOptions>
+                            </apex:selectList>
+                        </td>
+                        <td>
+                            <apex:inputText value="{!url}" id="url" styleClass="slds-input predictionTypes" html-placeholder="Search by URL"/>
+                            <apex:inputText value="{!base64String}" id="base64" styleClass="slds-input predictionTypes" html-placeholder="Search by Base64"/>                            
+                            <apex:inputFile value="{!atcObj.body}" id="image" styleclass="slds-input predictionTypes" style="padding-top: 6px;padding-left: 10px;"/>
+                        </td>
+                        <td style="width:72px;">
+                            <apex:commandButton value="Predict" action="{!doSearch}" styleClass="slds-button slds-button_brand" onclick="showStatus();"/>
+                        </td>
+                    </tr>
+                </table>
+                
+                <div style="text-align: left;margin-top: 15px;">
+                    <label>Response</label>
+                    <apex:inputTextarea id="jsonResponse" styleClass="slds-input" value="{!response}" style="height: 600px;"/>
+                </div>
+                
+            </div>
+        </apex:form>
+    </body>
+</html>
+</apex:page>

@@ -1,0 +1,274 @@
+<apex:page controller="EinsteinManagerCtrl" id="pge" title="Einstein Manager" showHeader="false" standardStylesheets="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" docType="html-5.0">
+<html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <title>Einstein Manager</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+        <!-- Import the Design System style sheet -->
+        <apex:slds />
+        
+        <style>
+            body{
+                margin: 0px;
+            }
+            .leftPanel{
+                float: left;
+                width: 40%;
+                height: 100px;
+                margin-top: 40px;
+            }
+            .rightPanel{
+                float: left;
+                width: 60%;
+                padding: 10px;
+                padding-top: 0px;
+                margin-top: 40px;
+            }
+        </style>
+        
+        <script>
+           function showStatus(){
+               $(".statusIndi").show();
+           }
+           
+           function hideStatus(){
+                $(".statusIndi").hide();
+                prettyPrint();
+                setHeights();
+           }
+           
+           function prettyPrint() {
+                var ugly = document.getElementById('pge:frm:response').value;
+                var obj = JSON.parse(ugly);
+                var pretty = JSON.stringify(obj, undefined, 4);
+                document.getElementById('pge:frm:response').value = pretty;
+           }
+           
+           function setHeights(){
+               $("#pge\\:frm\\:response").css("height", $(window).height()-65 +"px");
+               $("#leftScrollPanel").css("height", $(window).height()-45 +"px");
+           }
+        </script>
+    </head>
+    <body>
+        <apex:form id="frm">
+            <script>
+                $( document ).ready(function() {
+                    setHeights();
+                });
+            </script>
+            
+            
+            <div style="padding-left: 10px;background: black;color: white;height: 40px;position: fixed;width: 100%;z-index: 10000;">
+                <apex:pageMessages id="pgeMsg"></apex:pageMessages>
+            </div>
+            
+            <div class="slds-scope">
+                
+                
+                <!--Progress Status-->
+                <div class="demo-only demo--inverse statusIndi" style="height: 6rem;position: fixed;z-index: 1000;left: 51%;top: 40%;z-index:1100;display:none;">
+                  <div class="slds-spinner_container">
+                    <div role="status" class="slds-spinner slds-spinner_medium slds-spinner_brand">
+                      <span class="slds-assistive-text">Loading</span>
+                      <div class="slds-spinner__dot-a"></div>
+                      <div class="slds-spinner__dot-b"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="statusIndi" style="width:100%;position:fixed;height:2000px;background:black;z-index:1000;opacity:0.6;top: 0;left: 0;display:none;"></div>
+                <!--Progress Status-->
+                
+                <div class="leftPanel">
+                    <div style="position: absolute;z-index: 100;width: 40%;overflow: scroll;" id="leftScrollPanel">
+                        <div style="padding: 10px;">
+                            <!--View All Datasets Start Here-->
+                            <article class="slds-card">
+                                <div class="slds-card__header slds-grid">
+                                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <div class="slds-media__body">
+                                            <h2>
+                                                <span class="slds-text-heading_small">View All Datasets</span>
+                                            </h2>
+                                        </div>
+                                    </header>
+                                    <div class="slds-no-flex">
+                                        <apex:commandButton value="Fetch" styleClass="slds-button slds-button_neutral" action="{!fetchAllDataset}" reRender="response,pgeMsg" onclick="showStatus();" oncomplete="hideStatus();"/>
+                                    </div>
+                                </div>
+                            </article>
+                            <!--View All Datasets End Here-->
+                            
+                            <!--Create Dataset Start Here-->
+                            <article class="slds-card">
+                                <div class="slds-card__header slds-grid">
+                                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <div class="slds-media__body">
+                                            <h2>
+                                                <span class="slds-text-heading_small">Create Dataset</span>
+                                            </h2>
+                                        </div>
+                                    </header>
+                                    <div class="slds-no-flex">
+                                        <apex:commandButton value="Create" styleClass="slds-button slds-button_neutral" action="{!createDataset}" reRender="response,pgeMsg" onclick="showStatus();" oncomplete="hideStatus();"/>
+                                    </div>
+                                </div>
+                                <div class="slds-card__body slds-card__body_inner">
+                                    <label>Dataset Name</label>
+                                    <apex:inputText value="{!datasetName}" styleClass="slds-input"/>
+                                    
+                                    <label>Dataset URL</label>
+                                    <apex:inputText value="{!datasetUrl}" styleClass="slds-input"/>
+                                </div>
+                            </article>
+                            <!--Create Dataset End Here-->
+                            
+                            <!--View Dataset Detail Start Here-->
+                            <article class="slds-card">
+                                <div class="slds-card__header slds-grid">
+                                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <div class="slds-media__body">
+                                            <h2>
+                                                <span class="slds-text-heading_small">View Dataset Detail</span>
+                                            </h2>
+                                        </div>
+                                    </header>
+                                    <div class="slds-no-flex">
+                                        <apex:commandButton value="View" styleClass="slds-button slds-button_neutral" action="{!fetchDatasetDetail}" reRender="response,pgeMsg" onclick="showStatus();" oncomplete="hideStatus();"/>
+                                    </div>
+                                </div>
+                                <div class="slds-card__body slds-card__body_inner">
+                                    <label>Dataset ID</label>
+                                    <apex:inputText value="{!datasetid_ViewDetail}" styleClass="slds-input"/>
+                                </div>
+                            </article>
+                            <!--View Dataset Detail End Here-->
+                            
+                            <!--Delete Dataset Start Here-->
+                            <article class="slds-card">
+                                <div class="slds-card__header slds-grid">
+                                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <div class="slds-media__body">
+                                            <h2>
+                                                <span class="slds-text-heading_small">Delete Dataset</span>
+                                            </h2>
+                                        </div>
+                                    </header>
+                                    <div class="slds-no-flex">
+                                        <apex:commandButton value="Delete" styleClass="slds-button slds-button_neutral" action="{!doDeleteDataset}" reRender="response,pgeMsg" onclick="showStatus();" oncomplete="hideStatus();"/>
+                                    </div>
+                                </div>
+                                <div class="slds-card__body slds-card__body_inner">
+                                    <label>Dataset ID</label>
+                                    <apex:inputText value="{!datasetId_DeleteDataset}" styleClass="slds-input"/>
+                                </div>
+                            </article>
+                            <!--Delete Dataset End Here-->
+                        </div>
+                        
+                        <div style="padding: 10px;">
+                            <!--Fetch All Models Start Here-->
+                            <article class="slds-card">
+                                <div class="slds-card__header slds-grid">
+                                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <div class="slds-media__body">
+                                            <h2>
+                                                <span class="slds-text-heading_small">Fetch All Models of Dataset</span>
+                                            </h2>
+                                        </div>
+                                    </header>
+                                    <div class="slds-no-flex">
+                                        <apex:commandButton value="Fetch" styleClass="slds-button slds-button_neutral" action="{!fetchAllModels}" reRender="response,pgeMsg" onclick="showStatus();" oncomplete="hideStatus();"/>
+                                    </div>
+                                </div>
+                                <div class="slds-card__body slds-card__body_inner">
+                                    <label>Dataset ID</label>
+                                    <apex:inputText value="{!datasetId_AllModels}" styleClass="slds-input"/>
+                                </div>
+                            </article>
+                            <!--Fetch All Models End Here-->
+                            
+                            <!--Train Model Start Here-->
+                            <article class="slds-card">
+                                <div class="slds-card__header slds-grid">
+                                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <div class="slds-media__body">
+                                            <h2>
+                                                <span class="slds-text-heading_small">Train Model</span>
+                                            </h2>
+                                        </div>
+                                    </header>
+                                    <div class="slds-no-flex">
+                                        <apex:commandButton value="Train" styleClass="slds-button slds-button_neutral" action="{!trainDataset}" reRender="response,pgeMsg" onclick="showStatus();" oncomplete="hideStatus();"/>
+                                    </div>
+                                </div>
+                                <div class="slds-card__body slds-card__body_inner">
+                                    <label>Dataset ID</label>
+                                    <apex:inputText value="{!datasetId_TrainModel}" styleClass="slds-input"/>
+                                    <label>Model Name</label>
+                                    <apex:inputText value="{!modelName}" styleClass="slds-input"/>
+                                </div>
+                            </article>
+                            <!--Train Model Detail End Here-->
+                            
+                            <!--View Model Detail Start Here-->
+                            <article class="slds-card">
+                                <div class="slds-card__header slds-grid">
+                                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <div class="slds-media__body">
+                                            <h2>
+                                                <span class="slds-text-heading_small">View Model Detail (Training Status)</span>
+                                            </h2>
+                                        </div>
+                                    </header>
+                                    <div class="slds-no-flex">
+                                        <apex:commandButton value="View" styleClass="slds-button slds-button_neutral" action="{!fetchModelDetail}" reRender="response,pgeMsg" onclick="showStatus();" oncomplete="hideStatus();"/>
+                                    </div>
+                                </div>
+                                <div class="slds-card__body slds-card__body_inner">
+                                    <label>Model ID</label>
+                                    <apex:inputText value="{!modelId_ViewModel}" styleClass="slds-input"/>
+                                </div>
+                            </article>
+                            <!--View Model Detail End Here-->
+                            
+                            <!--ReTrain Model Start Here-->
+                            <article class="slds-card">
+                                <div class="slds-card__header slds-grid">
+                                    <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                                        <div class="slds-media__body">
+                                            <h2>
+                                                <span class="slds-text-heading_small">Re-Train Model</span>
+                                            </h2>
+                                        </div>
+                                    </header>
+                                    <div class="slds-no-flex">
+                                        <apex:commandButton value="Retrain" styleClass="slds-button slds-button_neutral" action="{!reTrain}" reRender="response,pgeMsg" onclick="showStatus();" oncomplete="hideStatus();"/>
+                                    </div>
+                                </div>
+                                <div class="slds-card__body slds-card__body_inner">
+                                    <label>Model ID</label>
+                                    <apex:inputText value="{!modelId_RetrainModel}" styleClass="slds-input"/>
+                                </div>
+                            </article>
+                            <!--ReTrain Model Detail End Here-->
+                        </div> 
+                    </div>
+                </div>
+                
+                <div class="rightPanel">
+                    <div style="position: fixed;width: 59%;">
+                        <label>Response</label>
+                        <apex:inputTextarea value="{!response}" styleClass="slds-input" id="response" style="height: 900px;"/>
+                    </div>
+                </div>
+                
+                
+            </div>
+        </apex:form>
+    </body>
+</html>
+</apex:page>
