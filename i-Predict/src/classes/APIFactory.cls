@@ -6,7 +6,7 @@
 */
 public class APIFactory{
     //Einstein's platform service account's Email address
-    public static String USER_EMAIL = 'vishnukumarramawat@gmail.com';
+    public static String USER_EMAIL = '';
     
     //API List
     public static string API = 'https://api.einstein.ai/v1/';  
